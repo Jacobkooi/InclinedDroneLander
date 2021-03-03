@@ -17,9 +17,9 @@ else:
 
 if __name__ == '__main__':
 
-    environment = 'CF_2d_inclined'
+    environment = 'CF_3d_setpoint'
     algorithm = 'PPO'               # PPO is fast, robust, and on-policy for curriculum learning
-    training_timesteps = 3000000    # Total amount of Timesteps to train for
+    training_timesteps = 1000000    # Total amount of Timesteps to train for
     pwm = 17000                     # PWM from theoretical hover Pwm, in the minus or plus direction.
     t_s = 1/50                      # seconds
 

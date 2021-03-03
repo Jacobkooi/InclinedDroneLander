@@ -59,7 +59,7 @@ def eom3d_crazyflie_closedloop(x, u, param):
     b_ss = 1                                                         # State space B
     c_ss = 3.5616e-5                                                 # State space C
     d_ss = 7.2345e-8                                                 # State space AD
-    force = 4*(c_ss*x[5] +d_ss*pwm_commanded)                        # Thrust force
+    force = 4*(c_ss*x[8] + d_ss*pwm_commanded)                        # Thrust force
     pwm_drag = force_to_pwm(force)                                   # Symbolic PWM to approximate rotor drag
     dragxy = 9.1785e-7*4*(0.04076521*pwm_drag + 380.8359)            # Fa,xy
     dragz = 10.311e-7*4*(0.04076521*pwm_drag + 380.8359)             # Fa,z

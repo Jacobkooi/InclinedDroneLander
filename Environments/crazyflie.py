@@ -151,7 +151,7 @@ class Crazyflie_2d_inclined(gym.Env):
         # Clip position to be in the bounds of the Optitrack Stadium
         self.agent_pos[0] = np.clip(self.agent_pos[0], self.observation_space.low[0] + 0.1,
                                         self.observation_space.high[0] - 0.1)
-        self.agent_pos[1] = np.clip(self.agent_pos[1], self.observation_space.low[1] + 0.1,
+        self.agent_pos[1] = np.clip(self.agent_pos[1], self.observation_space.low[1] + 1,
                                         self.observation_space.high[1] - 0.1)
 
         self.counter = 0
@@ -364,11 +364,11 @@ class Crazyflie_3d_setpoint(gym.Env):
 
         # Fix PWM increments from its theoretical Hover PWM
         PWM_commanded_new = self.hover_pwm + action[0]*self.max_pwm_from_hover
-        # Compute the action vector that goes into the Equations of Motion
+        # Compute the action vector that goes into the Equations of Motion [PWM, clipped, clipped]
         self.real_action = np.array([PWM_commanded_new, action[1], action[2]], dtype=float)
         # Add the physically unobservable thrust state for simulation purposes
         extended_state = np.concatenate((self.agent_pos, self.thrust_state))
-        # Simulate the agent with 1 time step using Runge Kutta 4 and the EOM
+        # Simulate the agent for 1 time step using Runge Kutta 4 and the EOM
         extended_state = extended_state + self.RK4(extended_state, self.real_action, self.EOM, self.param, self.T_s)
         # Subtract the thrust state to form the actual states we want to use in training
         self.agent_pos = extended_state[0:-1]
@@ -415,7 +415,7 @@ class Crazyflie_3d_setpoint(gym.Env):
         # Rendering for 3-D performance. Since pyglet did not support 3D we made two 2D views.
         if self.viewer is None:
             from gym.envs.classic_control import rendering
-            self.viewer = rendering.Viewer(720*2, 288*2)
+            self.viewer = rendering.Viewer(720, 288)
             self.viewer.set_bounds(-3.5*2, 3.6, -0.5*2, 2.5)
 
             # Define the rods for making quadrotor bodies
