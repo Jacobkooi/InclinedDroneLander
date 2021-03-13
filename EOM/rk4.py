@@ -1,6 +1,6 @@
 
-
-def runge_kutta4(x, u, eom, param, t_s):  # Runge Kutta taking the EOM as an argument
+# Runge Kutta taking the EOM as an argument
+def runge_kutta4(x, u, eom, param, t_s):
 
     k1 = eom(x, u, param)
     k2 = eom(x + 0.5 * t_s * k1, u, param)

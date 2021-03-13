@@ -7,12 +7,13 @@ from math import cos, sin, pi, sqrt
 
 @jit
 def pwm_to_force(pwm):
-
+    # Modified formula from Julian Forster's Crazyflie identification
     force = 4*(2.130295e-11*(pwm**2) + 1.032633e-6*pwm+5.485e-4)
     return force
 
 @jit
-def force_to_pwm(force):  # Identified by Julian Forster
+def force_to_pwm(force):
+    # Just the inversion of pwm_to_force
     a = 4*2.130295e-11
     b = 4*1.032633e-6
     c = 5.485e-4 - force
@@ -32,7 +33,8 @@ def eom2d_crazyflie_closedloop(x, u, param):
     b_ss = 1                                                         # State space B
     c_ss = 3.5616e-5                                                 # State space C
     d_ss = 7.2345e-8                                                 # State space AD
-    force = 4*(c_ss*x[5] + d_ss*pwm_commanded)                        # Thrust force
+    force = 4*(c_ss*x[5] + d_ss*pwm_commanded)                       # Thrust force
+    # force *= 0.88                                                  # This takes care of the motor thrust gap sim2real
     pwm_drag = force_to_pwm(force)                                   # Symbolic PWM to approximate rotor drag
     dragx = 9.1785e-7*4*(0.04076521*pwm_drag + 380.8359)             # Fa,x
     dragz = 10.311e-7*4*(0.04076521*pwm_drag + 380.8359)             # Fa,z
@@ -52,14 +54,15 @@ def eom3d_crazyflie_closedloop(x, u, param):
     # States are: [x, y, z, x_dot, y_dot, z_dot, phi, theta, thrust_state]
     # u = [PWM_c, Phi_c, Theta_c] = [10000 to 60000, -1 to 1, -1 to 1]
     # param = [mass, gain constant, time constant]
-    # Note that we use the rotation matrice convention according to the paper, with yaw = 0.
+    # Note that we use the rotation matrices convention according to the paper, with yaw = 0.
 
     pwm_commanded = u[0]
     a_ss = -15.4666                                                  # State space A
     b_ss = 1                                                         # State space B
     c_ss = 3.5616e-5                                                 # State space C
     d_ss = 7.2345e-8                                                 # State space AD
-    force = 4*(c_ss*x[8] + d_ss*pwm_commanded)                        # Thrust force
+    force = 4*(c_ss*x[8] + d_ss*pwm_commanded)                       # Thrust force
+    # force *= 0.88                                                  # This takes care of the motor thrust gap sim2real
     pwm_drag = force_to_pwm(force)                                   # Symbolic PWM to approximate rotor drag
     dragxy = 9.1785e-7*4*(0.04076521*pwm_drag + 380.8359)            # Fa,xy
     dragz = 10.311e-7*4*(0.04076521*pwm_drag + 380.8359)             # Fa,z

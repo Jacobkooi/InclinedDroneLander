@@ -18,7 +18,7 @@ from shapely.geometry.polygon import Polygon
 class Crazyflie_2d_inclined(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    # state = [x, z, xdot, zdot, theta], action = [Thrust, Theta_commanded]
+    # state = [x, z, xdot, zdot, theta], action = [Thrust, Theta_commanded], param = [mass, gain_const, time_const]
 
     def __init__(self, t_s, goal_state=np.array([0, 1.25, 0, 0, 0], dtype=float),
                  episode_steps=300, rewardfunc=sparse_reward2d, eom=eom2d_crazyflie_closedloop,
@@ -317,8 +317,8 @@ class Crazyflie_3d_setpoint(gym.Env):
 
     # state = [x, y, z, xdot, ydot, zdot, phi, theta], action = [Thrust, Phi_commanded, Theta_commanded]
     def __init__(self, t_s, goal_state=np.array([0, 0, 1.2, 0, 0, 0, 0, 0]), episode_steps=300,
-                 rewardfunc=euclidean_reward3d, eom=eom3d_crazyflie_closedloop, max_pwm_from_hover=13000,
-                 param=np.array([0.03350, 1.1094, 0.183806]), rk4=runge_kutta4):
+                 rewardfunc=euclidean_reward3d, eom=eom3d_crazyflie_closedloop, max_pwm_from_hover=17000,
+                 param=np.array([0.03303, 1.1094, 0.183806]), rk4=runge_kutta4):
         super(Crazyflie_3d_setpoint, self).__init__()
 
         self.quad_arms = 0.2

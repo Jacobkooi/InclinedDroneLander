@@ -52,7 +52,7 @@ def euclidean_reward3d(next_state, goal_state, observation_space, action):
     # Orientation cost
     error_angle = sqrt((next_state[6] - goal_state[6])**2 + (next_state[7] - goal_state[7])**2)
     # Action cost
-    error_action = 0.1*(action[1]**2+action[2]**2)*1/error_position
+    error_action = 0.1*(action[1]**2+action[2]**2)*1/(max(error_position, 0.001))
     # Bounds cost
     bounds_reward = -1 * int((abs(next_state[0] - observation_space.high[0]) < 0.05 or
                               abs(next_state[0] - observation_space.low[0]) < 0.05 or
