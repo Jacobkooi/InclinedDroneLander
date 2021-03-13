@@ -15,23 +15,22 @@ from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
 
-class Crazyflie_2d_inclined(gym.Env):
+class Crazyflie_2d_inclined_eval(gym.Env):
     metadata = {'render.modes': ['human']}
 
     # state = [x, z, xdot, zdot, theta], action = [Thrust, Theta_commanded]
 
-    def __init__(self, t_s, goal_state=np.array([0, 1.25, 0, 0, 0], dtype=float),
+    def __init__(self, t_s, goal_state=np.array([0, 1.25, 0, 0, -pi/7], dtype=float),
                  episode_steps=300, rewardfunc=sparse_reward2d, eom=eom2d_crazyflie_closedloop,
                  max_pwm_from_hover=15000, param=np.array([0.03303, 1.1094, 0.183806]), rk4=runge_kutta4):
-        super(Crazyflie_2d_inclined, self).__init__()
+        super(Crazyflie_2d_inclined_eval, self).__init__()
 
         # Construct the landing polygon
         self.landing_angle = -pi/7
         self.platform_center = goal_state[0]
         self.platform_center_height = 1.15
         self.platform_width = 0.8
-        self.landing_polygon = Polygon([(1, 0), (1, 0.1), (-1, 0.1), (-1, 0)])
-        self.final_polygon = Polygon([(self.platform_center-0.5*self.platform_width, self.platform_center_height-
+        self.landing_polygon = Polygon([(self.platform_center-0.5*self.platform_width, self.platform_center_height-
                                      tan(abs(self.landing_angle))*0.5*self.platform_width),
                                      (self.platform_center+0.5*self.platform_width,
                                          self.platform_center_height +
@@ -59,11 +58,7 @@ class Crazyflie_2d_inclined(gym.Env):
         self.max_pwm_from_hover = max_pwm_from_hover
 
         self.episode_counter = 0
-        self.goal_range = 0.25 # Starting goal range
-        self.horizontal_spawn_radius = 0.2 # Starting x-ais spawn distance around goal
-        self.vertical_spawn_radius = 0.2 # Starting z-axis spawn distance around goal
-        self.spawn_increment = 1/6000
-        self.tilt_goal_increment = (abs(self.landing_angle)/6000)
+        self.goal_range = 0.10
         self.action_space = spaces.Box(low=np.array([-1, -1]),
                                        high=np.array([1, 1]), dtype=np.float)
         # States are: [x, z, x_dot. z_dot, Theta, Theta_dot]
@@ -118,35 +113,17 @@ class Crazyflie_2d_inclined(gym.Env):
         self.episode_counter += 1
 
         # Start episodes within a box around the goal state
-        self.agent_pos = np.array([r.uniform(self.goal_state[0]-self.horizontal_spawn_radius,
-                                             self.goal_state[0]+self.horizontal_spawn_radius),
-                                   r.uniform(self.goal_state[1]-self.vertical_spawn_radius,
-                                             self.goal_state[1]+self.vertical_spawn_radius), 0, 0, 0], dtype=np.float32)
+        self.agent_pos = np.array([r.uniform(self.goal_state[0]-3,
+                                             self.goal_state[0]+3),
+                                   r.uniform(self.goal_state[1]-0.3,
+                                             self.goal_state[1]+1), 0, 0, 0], dtype=np.float32)
 
         while self.landing_polygon.contains(Point(self.agent_pos[0], self.agent_pos[1])):
-            self.agent_pos = np.array([np.clip(r.uniform(self.goal_state[0] - self.horizontal_spawn_radius,
-                                                 self.goal_state[0] + self.horizontal_spawn_radius),
-                                               self.observation_space.low[0], self.observation_space.high[0]),
-                                       np.clip(r.uniform(self.goal_state[1] - self.vertical_spawn_radius,
-                                                 self.goal_state[1] + self.vertical_spawn_radius),
-                                               self.observation_space.low[1]+0.5, self.observation_space.high[1]), 0, 0, 0],
-                                      dtype=np.float32)
-        # Spawn Radius Increase
-        self.horizontal_spawn_radius += self.spawn_increment
-        if self.vertical_spawn_radius <= 1:
-            self.vertical_spawn_radius += 0.75 * self.spawn_increment
-
-        # Gradually decrease the goal threshold
-        if 7500 >= self.episode_counter >= 2500:
-            self.goal_range -= 0.15/5000
-
-        # Slowly incline the goal state
-        if self.Timesteps >= 400000 and self.goal_state[4] >= self.landing_angle:
-            self.goal_state[4] -= self.tilt_goal_increment
-
-        # Place the landing platform once the quad learned to reach inclined goals
-        if self.Timesteps >= 800000:
-            self.landing_polygon = self.final_polygon
+            self.agent_pos = np.array([np.clip(r.uniform(self.goal_state[0] - 3, self.goal_state[0] + 3),
+                                       self.observation_space.low[0], self.observation_space.high[0]),
+                                       np.clip(r.uniform(self.goal_state[1] - 0.3, self.goal_state[1] + 1),
+                                       self.observation_space.low[1], self.observation_space.high[1]), 0, 0, 0],
+                                       dtype=np.float32)
 
         # Clip position to be in the bounds of the Optitrack Stadium
         self.agent_pos[0] = np.clip(self.agent_pos[0], self.observation_space.low[0] + 0.1,
@@ -312,14 +289,14 @@ class Crazyflie_2d_inclined(gym.Env):
             self.viewer = None
 
 
-class Crazyflie_3d_setpoint(gym.Env):
+class Crazyflie_3d_setpoint_eval(gym.Env):
     metadata = {'render.modes': ['human']}
 
     # state = [x, y, z, xdot, ydot, zdot, phi, theta], action = [Thrust, Phi_commanded, Theta_commanded]
     def __init__(self, t_s, goal_state=np.array([0, 0, 1.2, 0, 0, 0, 0, 0]), episode_steps=300,
                  rewardfunc=euclidean_reward3d, eom=eom3d_crazyflie_closedloop, max_pwm_from_hover=13000,
                  param=np.array([0.03303, 1.1094, 0.183806]), rk4=runge_kutta4):
-        super(Crazyflie_3d_setpoint, self).__init__()
+        super(Crazyflie_3d_setpoint_eval, self).__init__()
 
         self.quad_arms = 0.2
         self.obstacle_range = self.quad_arms - 0.15
