@@ -45,4 +45,4 @@ For any questions, errors or suggestions contact me at jacobkooi92@gmail.com.
 
 When using this code or referring to our work please cite us at:
 
-Arxiv upload coming soon.
+Arxiv upload coming in the next 24 hours.
