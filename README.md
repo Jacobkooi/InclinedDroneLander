@@ -43,6 +43,6 @@ For any questions or suggestions contact me at jacobkooi92@gmail.com.
 
 ## Citing
 
-If you find are using this work for your research please cite us as:
+When using this code or referring to our work please cite us at:
 
 Arxiv upload coming soon.
