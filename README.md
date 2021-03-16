@@ -9,7 +9,7 @@ More documentation will be added soon.
 
 # InclinedDroneLander
 
-Model-free training of 2d inclined landing and 3d setpoint-tracking for the Crazyflie 2.1 Nano-UAV. The resulting policies are transferable to use on a real crazyflie.
+Model-free training of 2d inclined landing and 3d setpoint-tracking for the Crazyflie 2.1 Nano-UAV. The resulting policies are transferable to use on a real crazyflie. (See https://youtu.be/53YaqfwUIFU)
 
 ## Usage
 
