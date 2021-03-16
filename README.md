@@ -35,7 +35,7 @@ gym 0.17.3
 
 PPO Sparse Inclined Landing (3000000 timesteps)           |  PPO Euclidean Setpoint Tracking (1000000 timesteps)
 :-------------------------:|:-------------------------:
-![](link) |  ![](link)
+![](https://github.com/Jacobkooi/InclinedDroneLander/blob/master/Gifs/Gif_landing.gif) |  ![](https://github.com/Jacobkooi/InclinedDroneLander/blob/master/Gifs/Gif_setpoint.gif)
 
 ## Questions
 
