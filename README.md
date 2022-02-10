@@ -46,3 +46,24 @@ For any questions, errors or suggestions contact me at jacobkooi92@gmail.com.
 When using this code or referring to our work please cite the paper at:
 
 https://ieeexplore.ieee.org/document/9636096/citations?tabFilter=papers#citations
+
+Or use this bibtex:
+
+@INPROCEEDINGS{9636096,
+
+  author={Kooi, Jacob E. and Babuška, Robert},
+
+  booktitle={2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+
+  title={Inclined Quadrotor Landing using Deep Reinforcement Learning}, 
+
+  year={2021},
+
+  volume={},
+
+  number={},
+
+  pages={2361-2368},
+
+  doi={10.1109/IROS51168.2021.9636096}}
+
