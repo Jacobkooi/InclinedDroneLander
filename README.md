@@ -45,4 +45,4 @@ For any questions, errors or suggestions contact me at jacobkooi92@gmail.com.
 
 When using this code or referring to our work please cite the paper at:
 
-https://arxiv.org/abs/2103.09043
+https://ieeexplore.ieee.org/document/9636096/citations?tabFilter=papers#citations
